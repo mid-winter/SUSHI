@@ -6,6 +6,10 @@ class cApp
 {
 	GLFWwindow* window;
 
+	//このクラスのコピーを禁止する
+	cApp(const cApp&) = delete;
+	cApp& operator =(const cApp&) = delete;
+
 public:
 	//コンストラクタ
 	cApp::cApp(const std::string& name,

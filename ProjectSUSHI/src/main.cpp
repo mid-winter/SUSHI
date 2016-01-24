@@ -4,6 +4,7 @@
 
 #include"app.h"
 #include"graphic.h"
+#include"gamePad.h"
 
 enum WindowSize
 {

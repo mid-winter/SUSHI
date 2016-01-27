@@ -1,23 +1,37 @@
 #pragma once
 #include"app.h"
 #include"multiProce.h"
+#include "gamePad.h"
 
 namespace nGame
 {
-	//”wŒi‰æ‘œ
-	cTexture backTex("res/BackGround.raw",
-		1024, 1024,
-		true);
-
-	void update(cApp& app)
+	void update(cApp& app, std::vector<cGamePad>& gamepad)
 	{
+		//”wŒi‰æ‘œ
+		cTexture backTex("res/BackGround.raw",
+			1024, 1024,
+			true);
+
 		while (1)
 		{
+			if (!app.isOpen()) exit(0);
+			app.begin();
+			updateGamePad(gamepad);
+
+			// ƒ¿ƒuƒŒƒ“ƒfƒBƒ“ƒO‚ð—LŒø‚É‚·‚é
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+			//”wŒi
 			drawTexture(-WIDTH / 2, -HEIGHT / 2,
 				WIDTH, HEIGHT,
-				0, 0, 960, 540,
+				0, 0, WIDTH, HEIGHT,
 				Color(1, 1, 1),
 				backTex);
+
+			// ƒ¿ƒuƒŒƒ“ƒfƒBƒ“ƒO‚ð–³Œø‚É‚·‚é
+			glDisable(GL_BLEND);
+			app.end();
 		}
 	}
 }

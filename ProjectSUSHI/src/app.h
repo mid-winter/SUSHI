@@ -18,7 +18,7 @@ public:
 	//コンストラクタ
 	cApp::cApp(const std::string& name,
 		const int width, const int height)
-		:width_(width), height_(height)
+		: width_(width), height_(height)
 	{
 		//初期化
 		glfwInit();

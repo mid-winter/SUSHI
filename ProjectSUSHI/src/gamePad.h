@@ -146,7 +146,6 @@ std::vector<cGamePad> initGamePad()
 }
 
 //ゲームパッドの情報をまとめて更新
-
 void updateGamePad(std::vector<cGamePad>& gamepad)
 {
 	for (auto& pad : gamepad)

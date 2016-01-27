@@ -13,11 +13,11 @@ int main()
 	cApp app("SUSHI", WIDTH, HEIGHT);
 
 	//ゲームパッド
-	cGamePad pad(0);
+	std::vector<cGamePad>gamepads;
 
 	//コントローラーの初期化
 	initGamePad();
 
-	nTitle::update(app, pad);
-	nGame::update(app);
+	nTitle::update(app, gamepads);
+	nGame::update(app, gamepads);
 }

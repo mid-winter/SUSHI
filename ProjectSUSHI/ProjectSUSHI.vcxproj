@@ -155,8 +155,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\app.h" />
+    <ClInclude Include="src\fade.h" />
+    <ClInclude Include="src\game.h" />
     <ClInclude Include="src\gamePad.h" />
     <ClInclude Include="src\graphic.h" />
+    <ClInclude Include="src\multiProce.h" />
+    <ClInclude Include="src\settings.h" />
+    <ClInclude Include="src\title.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

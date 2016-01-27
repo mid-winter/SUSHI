@@ -107,7 +107,6 @@ void setupTexture(const GLuint id,
 //画像情報クラス
 class cTexture
 {
-	GLuint id_;
 	//画像のサイズ
 	Eigen::Vector2i size_;
 
@@ -116,6 +115,9 @@ class cTexture
 	cTexture& operator =(const cTexture&) = delete;
 
 public:
+
+	GLuint id_;
+
 	//コンストラクタ
 	cTexture(const std::string& path,
 		const int width, const int height,
@@ -143,58 +145,4 @@ public:
 
 	//サイズを受け取る
 	const Eigen::Vector2i& size() const { return size_; }
-
-	//OpenGLのコンテキストに拘束する
-	void bind() const
-	{
-		glBindTexture(GL_TEXTURE_2D, id_);
-	}
-
-	//拘束解除
-	void unbind() const
-	{
-		glBindTexture(GL_TEXTURE_2D, 0);
-	}
 };
-
-void drawTexture(const float pos_x, const float pos_y,
-	const float width, const float height,
-	const float texture_x, const float texture_y,
-	const float texture_width, const float texture_height,
-	cTexture& texture)
-{
-	// 描画する矩形の４頂点を配列で用意
-	GLfloat vtx[] =
-	{
-		pos_x, pos_y,
-		pos_x, pos_y + height,
-		pos_x + width, pos_y,
-		pos_x + width, pos_y + height,
-	};
-
-	glVertexPointer(2, GL_FLOAT, 0, vtx);
-
-	const auto& size = texture.size();
-
-	GLfloat uv[] = {
-		texture_x / size.x(), (texture_y + texture_height) / size.y(),
-		texture_x / size.x(), texture_y / size.y(),
-		(texture_x + texture_width) / size.x(), (texture_y + texture_height) / size.y(),
-		(texture_x + texture_width) / size.x(), texture_y / size.y(),
-	};
-
-	glTexCoordPointer(2, GL_FLOAT, 0, uv);
-
-	glEnable(GL_TEXTURE_2D);
-	texture.bind();
-
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
-	glDisableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-
-	texture.unbind();
-}

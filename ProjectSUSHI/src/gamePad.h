@@ -2,6 +2,32 @@
 #include<GLFW/glfw3.h>
 #include<vector>
 
+enum PS4_BUTTON_NAME
+{
+	//□×○△
+	SHIKAKU = 0,
+	BATSU,
+	MARU,
+	SANKAKU,
+
+	//L1~R2
+	L1, R1,
+	L2, R2,
+
+	//SHARE & OPTIONS
+	SHARE,
+	OPTIONS,
+
+	//L3・R3
+	L3, R3,
+	
+	//真ん中押し込み
+	TOUCHI_PUSH = 13,
+
+	//十字キー
+
+};
+
 class cGamePad
 {
 	int id_;
@@ -42,7 +68,7 @@ public:
 		glfwGetJoystickAxes(id_, &axes_num_);
 
 		//ボタンの数に応じた初期化
-		
+
 		//press
 		press_button_.resize(button_num_);
 		std::fill(std::begin(press_button_), std::end(press_button_), 0);
@@ -75,12 +101,12 @@ public:
 	}
 
 	//ゲームパッドが有効かの判定
-	bool isActive() const 
+	bool isActive() const
 	{
 		return (glfwJoystickPresent(id_) == GL_TRUE)
 			? true : false;
 	}
-	
+
 	//ゲームパッド内部の更新
 	void update()
 	{
@@ -100,34 +126,34 @@ public:
 			}
 		}
 	}
-
-	//PCに接続されているゲームパッド情報を取得
-	std::vector<cGamePad> initGamePad()
-	{
-		std::vector<cGamePad> gamepad;
-
-		//PCに接続されているパッドの検出をしコンテナに格納
-		for (int id = GLFW_JOYSTICK_1; id <= GLFW_JOYSTICK_LAST; ++id)
-		{
-			if (glfwJoystickPresent(id) == GL_TRUE)
-			{
-				gamepad.emplace_back(id);
-			}
-		}
-
-		return gamepad;
-	}
-
-	//ゲームパッドの情報をまとめて更新
-
-	void updateGamePad(std::vector<cGamePad>& gamepad)
-	{
-		for (auto& pad : gamepad)
-		{
-			if (pad.isActive())
-			{
-				pad.update();
-			}
-		}
-	}
 };
+
+//PCに接続されているゲームパッド情報を取得
+std::vector<cGamePad> initGamePad()
+{
+	std::vector<cGamePad> gamepad;
+
+	//PCに接続されているパッドの検出をしコンテナに格納
+	for (int id = GLFW_JOYSTICK_1; id <= GLFW_JOYSTICK_LAST; ++id)
+	{
+		if (glfwJoystickPresent(id) == GL_TRUE)
+		{
+			gamepad.emplace_back(id);
+		}
+	}
+
+	return gamepad;
+}
+
+//ゲームパッドの情報をまとめて更新
+
+void updateGamePad(std::vector<cGamePad>& gamepad)
+{
+	for (auto& pad : gamepad)
+	{
+		if (pad.isActive())
+		{
+			pad.update();
+		}
+	}
+}

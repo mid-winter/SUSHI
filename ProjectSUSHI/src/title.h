@@ -9,7 +9,7 @@ namespace nTitle
 	void update(cApp& app, std::vector<cGamePad>& gamepad)
 	{
 		//‰æ‘œ
-		cTexture title("res/Title.raw",
+		cTexture title("res/title.raw",
 			1024, 512, true);
 
 		Color fadecolor = Color(0, 0, 0, 1);

@@ -18,6 +18,6 @@ int main()
 	//コントローラーの初期化
 	initGamePad();
 
-	nTitle::update(app, gamepads);
+	//nTitle::update(app, gamepads);
 	nGame::update(app, gamepads);
 }

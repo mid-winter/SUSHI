@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="ヘッダー ファイル\パーツ">
+      <UniqueIdentifier>{9b3cd582-b87e-4aa6-9318-78cd1ea06050}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\画面">
+      <UniqueIdentifier>{e5dc9606-d370-4400-a7b3-0a22152b0f4d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -26,23 +32,29 @@
     <ClInclude Include="src\graphic.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="src\gamePad.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="src\title.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="src\settings.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="src\multiProce.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="src\fade.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\パーツ</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gamePad.h">
+      <Filter>ヘッダー ファイル\パーツ</Filter>
+    </ClInclude>
+    <ClInclude Include="src\guest.h">
+      <Filter>ヘッダー ファイル\パーツ</Filter>
     </ClInclude>
     <ClInclude Include="src\game.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\画面</Filter>
+    </ClInclude>
+    <ClInclude Include="src\settings.h">
+      <Filter>ヘッダー ファイル\画面</Filter>
+    </ClInclude>
+    <ClInclude Include="src\title.h">
+      <Filter>ヘッダー ファイル\画面</Filter>
+    </ClInclude>
+    <ClInclude Include="src\player.h">
+      <Filter>ヘッダー ファイル\パーツ</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

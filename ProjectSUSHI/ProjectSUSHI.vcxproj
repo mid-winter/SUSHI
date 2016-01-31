@@ -159,7 +159,9 @@
     <ClInclude Include="src\game.h" />
     <ClInclude Include="src\gamePad.h" />
     <ClInclude Include="src\graphic.h" />
+    <ClInclude Include="src\guest.h" />
     <ClInclude Include="src\multiProce.h" />
+    <ClInclude Include="src\player.h" />
     <ClInclude Include="src\settings.h" />
     <ClInclude Include="src\title.h" />
   </ItemGroup>

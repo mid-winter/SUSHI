@@ -25,7 +25,10 @@ enum PS4_BUTTON_NAME
 	TOUCHI_PUSH = 13,
 
 	//è\éöÉLÅ[
-
+	ARROW_UP,
+	ARROW_RIGHT,
+	ARROW_DOWN,
+	ARROW_LEFT
 };
 
 class cGamePad

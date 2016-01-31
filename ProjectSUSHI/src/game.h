@@ -2,18 +2,67 @@
 #include"app.h"
 #include"multiProce.h"
 #include "gamePad.h"
+#include "guest.h"
+#include "player.h"
 
 namespace nGame
 {
+	//背景描画
+	void backdraw(cTexture& back, cTexture& geta)
+	{
+		// αブレンディングを有効にする
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+		//背景
+		drawTexture(-WIDTH / 2, -HEIGHT / 2,
+			WIDTH, HEIGHT,
+			0, 0, WIDTH, HEIGHT,
+			Color(1.0f, 1.0f, 1.0f),
+			back);
+
+		//カウンター
+		drawFillBox(-WIDTH / 2, -HEIGHT / 2 + 100,
+			WIDTH, 75,
+			Color(0.8f, 0.5f, 0.0f));
+		drawFillBox(-WIDTH / 2, -HEIGHT / 2,
+			WIDTH, 100,
+			Color(0.7f, 0.7f, 0.7f));
+
+		//下駄
+		drawTexture(-450, -HEIGHT / 2 + 100,
+			250, 125,
+			0, 0, 1024, 1024,
+			Color(1.0f, 1.0f, 1.0f),
+			geta);
+		drawTexture(-125, -HEIGHT / 2 + 100,
+			250, 125,
+			0, 0, 1024, 1024,
+			Color(1.0f, 1.0f, 1.0f),
+			geta);
+		drawTexture(200, -HEIGHT / 2 + 100,
+			250, 125,
+			0, 0, 1024, 1024,
+			Color(1.0f, 1.0f, 1.0f),
+			geta);
+
+		// αブレンディングを無効にする
+		glDisable(GL_BLEND);
+	}
+
 	void update(cApp& app, std::vector<cGamePad>& gamepad)
 	{
 		//背景画像
 		cTexture backTex("res/background.raw",
-			1024, 1024,
-			true);
-		cTexture counterTex("res/counter.raw",
-			1024, 1024,
-			true);
+			1024, 1024, true);
+		//下駄
+		cTexture getaTex("res/geta.raw",
+			1024, 1024, true);
+
+		//客
+		cGuest gest(CENTER);
+		//プレイヤー
+		cPlayer player;
 
 		gamepad.emplace_back(cGamePad(0));
 		while (1)
@@ -22,26 +71,14 @@ namespace nGame
 			app.begin();
 			updateGamePad(gamepad);
 
-			// αブレンディングを有効にする
-			glEnable(GL_BLEND);
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			backdraw(backTex, getaTex);
 
-			//背景
-			drawTexture(-WIDTH / 2, -HEIGHT / 2,
-				WIDTH, HEIGHT,
-				0, 0, WIDTH, HEIGHT,
-				Color(1, 1, 1),
-				backTex);
+			gest.draw();
+			player.draw();
+			
+			gest.update();
+			player.update(gamepad);
 
-			//カウンター
-			drawTexture(-WIDTH / 2, -HEIGHT / 2,
-				WIDTH, HEIGHT,
-				0, 0, WIDTH, HEIGHT,
-				Color(1, 1, 1),
-				counterTex);
-
-			// αブレンディングを無効にする
-			glDisable(GL_BLEND);
 			app.end();
 		}
 	}

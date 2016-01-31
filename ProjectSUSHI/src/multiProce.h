@@ -8,6 +8,22 @@ enum WindowSize
 	HEIGHT = 540
 };
 
+enum GuestSeat
+{
+	LEFT = 0,
+	CENTER,
+	RIGHT
+};
+
+//画像情報
+struct  TextureInfo
+{
+	float pos_x, pos_y;
+	float size_x, size_y;
+	float cut_pos_x, cut_pos_y;
+	float cut_size_x, cut_size_y;
+};
+
 //画像描画
 //pos_x, pos_y				始点
 //width, height				幅・高さ
@@ -64,6 +80,22 @@ void drawTexture(const float pos_x, const float pos_y,
 	//画像情報を解放
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
+
+////回転ありの画像描画
+//void drawTexture(const float pos_x, const float pos_y,
+//	const float width, const float height,
+//	const float texture_x, const float texture_y,
+//	const float texture_w, const float texture_h,
+//	Color& color,
+//	cTexture& texture,
+//	const float angle,
+//	const Eigen::Vector2f& scaling,
+//	const Eigen::Vector2f& origin
+//	)
+//{
+//	//行列を生成
+//	auto matrix = transform
+//}
 
 //塗りつぶしありの四角
 //pos_x, pos_y		始点

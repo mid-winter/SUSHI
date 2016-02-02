@@ -22,7 +22,7 @@ class cPlayer
 
 public:
 	//コンストラクタ
-	cPlayer(std::vector<int>& menu_)
+	cPlayer()
 		:hand_lTex("res/hand_l.raw",
 		1024, 1024, true),
 		hand_rTex("res/hand_r.raw",

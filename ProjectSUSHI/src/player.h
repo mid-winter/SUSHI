@@ -10,16 +10,19 @@ class cPlayer
 	cTexture hand_sushi_lTex;
 	cTexture hand_sushi_rTex;
 
+	cTexture keyTex;
+
 	//画像情報
 	TextureInfo handInfo;
 
-	int seat = 0;
-
 	bool makebool = false;
+
+	int seat = 0;
 	int make_time = 0;
+
 public:
 	//コンストラクタ
-	cPlayer()
+	cPlayer(std::vector<int>& menu_)
 		:hand_lTex("res/hand_l.raw",
 		1024, 1024, true),
 		hand_rTex("res/hand_r.raw",
@@ -27,8 +30,11 @@ public:
 		hand_sushi_lTex("res/hand_sushi_l.raw",
 		1024, 1024, true),
 		hand_sushi_rTex("res/hand_sushi_r.raw",
-		1024, 1024, true)
+		1024, 1024, true),
+		keyTex("res/key.raw",
+		512, 512, true)
 	{
+		//手の位置情報
 		handInfo = {
 			0, -350,
 			400, 200,
@@ -36,7 +42,10 @@ public:
 			1024, 600
 		};
 
+		//手の位置
 		seat = CENTER;
+
+		//寿司生成判定
 		makebool = false;
 	}
 
@@ -81,6 +90,12 @@ public:
 				Color(1.0f, 1.0f, 1.0f),
 				hand_sushi_rTex);
 		}
+
+		//キー
+		drawTexture(200, -300, 200, 200,
+			0, 0, 512, 512,
+			Color(1, 1, 1, 0.6),
+			keyTex);
 
 		// αブレンディングを無効にする
 		glDisable(GL_BLEND);

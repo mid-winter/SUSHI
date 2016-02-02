@@ -2,18 +2,34 @@
 #include "GLFW/glfw3.h"
 #include "graphic.h"
 
+//ウィンドウサイズ
 enum WindowSize
 {
 	WIDTH = 960,
 	HEIGHT = 540
 };
 
+//席をわかりやすく
 enum GuestSeat
 {
 	LEFT = 0,
 	CENTER,
 	RIGHT
 };
+
+//寿司ネタを定義
+enum SushiMenu
+{
+	MAGURO = 0,
+	SALMON,
+	TAMAGO,
+	EBI,
+	IKURA,
+	IKA,
+	ANAGO,
+	HOTATE
+};
+
 
 //画像情報
 struct  TextureInfo

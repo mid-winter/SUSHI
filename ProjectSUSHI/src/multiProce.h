@@ -17,6 +17,14 @@ enum GuestSeat
 	RIGHT
 };
 
+//表情
+enum Face
+{
+	NORMAL,
+	SMILE,
+	ANGER
+};
+
 //寿司ネタを定義
 enum SushiMenu
 {
@@ -27,7 +35,8 @@ enum SushiMenu
 	IKURA,
 	IKA,
 	ANAGO,
-	HOTATE
+	HOTATE,
+	NONE = 100
 };
 
 

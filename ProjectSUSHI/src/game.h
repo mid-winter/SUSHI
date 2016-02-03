@@ -4,11 +4,12 @@
 #include "gamePad.h"
 #include "guest.h"
 #include "player.h"
+#include "sushi.h"
 
 namespace nGame
 {
 	//背景描画
-	void backdraw(cTexture& back, cTexture& geta)
+	void backdraw(cTexture& back)
 	{
 		// αブレンディングを有効にする
 		glEnable(GL_BLEND);
@@ -20,6 +21,16 @@ namespace nGame
 			0, 0, WIDTH, HEIGHT,
 			Color(1.0f, 1.0f, 1.0f),
 			back);
+
+		// αブレンディングを無効にする
+		glDisable(GL_BLEND);
+	}
+
+	//置物（少し前に置くもの）
+	void objectDraw(cTexture& geta){
+		// αブレンディングを有効にする
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		//カウンター
 		drawFillBox(-WIDTH / 2, -HEIGHT / 2 + 100,
@@ -60,9 +71,11 @@ namespace nGame
 			1024, 1024, true);
 
 		//客
-		cGuest gest(CENTER);
+		cGuest guest(CENTER, IKA);
 		//プレイヤー
-		cPlayer player;
+		cPlayer player(CENTER, MAGURO);
+		//寿司
+		cSushi sushi;
 
 		gamepad.emplace_back(cGamePad(0));
 		while (1)
@@ -71,13 +84,22 @@ namespace nGame
 			app.begin();
 			updateGamePad(gamepad);
 
-			backdraw(backTex, getaTex);
+			backdraw(backTex);
+			guest.draw();
 
-			gest.draw();
+			objectDraw(getaTex);
 			player.draw();
-			
-			gest.update();
-			player.update(gamepad);
+			sushi.draw();
+
+			guest.update();
+			player.update(gamepad, CENTER);
+			sushi.update(player.menu(),player.position());
+
+			//作ろうとしたら判定
+			if (player.makebool())
+			{
+				guest.judge(player.menu());
+			}
 
 			app.end();
 		}

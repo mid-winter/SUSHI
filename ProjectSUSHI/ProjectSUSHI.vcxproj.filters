@@ -56,5 +56,8 @@
     <ClInclude Include="src\player.h">
       <Filter>ヘッダー ファイル\パーツ</Filter>
     </ClInclude>
+    <ClInclude Include="src\sushi.h">
+      <Filter>ヘッダー ファイル\パーツ</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

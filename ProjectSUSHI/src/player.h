@@ -15,21 +15,30 @@ class cPlayer
 	//画像情報
 	TextureInfo handInfo;
 
-	bool makebool = false;
-
+	int menu_;
 	int seat = 0;
 	int make_time = 0;
 
+	bool makebool_ = false;
+
+	//このクラスのコピーを禁止する
+	cPlayer(const cPlayer&) = delete;
+	cPlayer& operator =(const cPlayer&) = delete;
+
 public:
+	int menu() const{ return menu_; }
+	bool makebool() const { return makebool_; }
+	int position() const { return seat; }
+
 	//コンストラクタ
-	cPlayer()
-		:hand_lTex("res/hand_l.raw",
+	cPlayer(int position, int menu)
+		:hand_lTex("res/hand/hand_l.raw",
 		1024, 1024, true),
-		hand_rTex("res/hand_r.raw",
+		hand_rTex("res/hand/hand_r.raw",
 		1024, 1024, true),
-		hand_sushi_lTex("res/hand_sushi_l.raw",
+		hand_sushi_lTex("res/hand/hand_sushi_l.raw",
 		1024, 1024, true),
-		hand_sushi_rTex("res/hand_sushi_r.raw",
+		hand_sushi_rTex("res/hand/hand_sushi_r.raw",
 		1024, 1024, true),
 		keyTex("res/key.raw",
 		512, 512, true)
@@ -46,7 +55,10 @@ public:
 		seat = CENTER;
 
 		//寿司生成判定
-		makebool = false;
+		makebool_ = false;
+		menu_ = menu;
+
+		position = seat;
 	}
 
 	//描画
@@ -56,7 +68,7 @@ public:
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-		if (!makebool)
+		if (!makebool_)
 		{
 			//左手
 			drawTexture(handInfo.pos_x - handInfo.size_x, handInfo.pos_y,
@@ -94,18 +106,19 @@ public:
 		//キー
 		drawTexture(200, -300, 200, 200,
 			0, 0, 512, 512,
-			Color(1, 1, 1, 0.6),
+			Color(1, 1, 1, 0.6f),
 			keyTex);
 
 		// αブレンディングを無効にする
 		glDisable(GL_BLEND);
 	}
 
-	void update(std::vector<cGamePad>& pad)
+	void update(std::vector<cGamePad>& pad, int position)
 	{
 		setPos();
 		make();
 
+		position = seat;
 		//移動処理
 		for (auto& gamepad : pad)
 		{
@@ -122,9 +135,26 @@ public:
 			}
 
 			//寿司をつくる体制
-			if (gamepad.isPushButton(MARU))
+			if (makebool_)
 			{
-				makebool = true;
+			}
+			else
+			{
+				if (gamepad.isPushButton(MARU))
+				{
+					menu_ = MAGURO;
+					makebool_ = true;
+				}
+				if (gamepad.isPushButton(BATSU))
+				{
+					menu_ = ANAGO;
+					makebool_ = true;
+				}
+				if (gamepad.isPushButton(SHIKAKU))
+				{
+					menu_ = IKA;
+					makebool_ = true;
+				}
 			}
 		}
 	}
@@ -150,13 +180,13 @@ private:
 	//寿司をつくる
 	void make()
 	{
-		if (makebool)
+		if (makebool_)
 		{
 			make_time++;
 			if (make_time > 60)
 			{
 				make_time = 0;
-				makebool = false;
+				makebool_ = false;
 			}
 		}
 	}

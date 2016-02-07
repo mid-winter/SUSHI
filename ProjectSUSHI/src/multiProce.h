@@ -106,21 +106,59 @@ void drawTexture(const float pos_x, const float pos_y,
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-////回転ありの画像描画
-//void drawTexture(const float pos_x, const float pos_y,
-//	const float width, const float height,
-//	const float texture_x, const float texture_y,
-//	const float texture_w, const float texture_h,
-//	Color& color,
-//	cTexture& texture,
-//	const float angle,
-//	const Eigen::Vector2f& scaling,
-//	const Eigen::Vector2f& origin
-//	)
-//{
-//	//行列を生成
-//	auto matrix = transform
-//}
+
+//回転・スケーリング・平行移動から変換行列を生成
+typedef Eigen::Transform< GLfloat, 3, Eigen::Affine> Affinef;
+Affinef transformMatrix2D(const float rotate_rad,
+	const Eigen::Vector3f& translate,
+	const Eigen::Vector3f& scaling)
+{
+	Affinef matrix;
+
+	Eigen::Translation<float, 3>  t(translate);
+	Eigen::DiagonalMatrix<GLfloat, 3> s(scaling);
+	Eigen::Quaternion<GLfloat> r(Eigen::AngleAxisf(rotate_rad, Eigen::Vector3f::UnitZ()));
+
+	matrix = t* r* s;
+
+	return matrix;
+}
+
+//回転ありの画像描画
+// angle						 回転角度(ラジアン)
+// scaling                       横、縦の拡大縮小率
+// origin                        矩形の原点位置
+void drawTexture(const float pos_x, const float pos_y,
+	const float width, const float height,
+	const float texture_x, const float texture_y,
+	const float texture_w, const float texture_h,
+	Color& color,
+	cTexture& texture,
+	const float angle,
+	const Eigen::Vector2f& scaling,
+	const Eigen::Vector2f& origin
+	)
+{
+	//行列を生成
+	auto matrix = transformMatrix2D(angle,
+		Eigen::Vector3f(pos_x, pos_y, 0.0f),
+		Eigen::Vector3f(scaling.x(), scaling.y(), 1.0f));
+
+	//OpenGLに行列を設定
+	glPushMatrix();
+	glMultMatrixf(matrix.data());
+
+	//描画
+	drawTexture(-origin.x(), -origin.y(),
+		width, height,
+		texture_x, texture_y,
+		texture_w, texture_h,
+		color,
+		texture);
+
+	//行列を戻す
+	glPopMatrix();
+}
 
 //塗りつぶしありの四角
 //pos_x, pos_y		始点
@@ -134,7 +172,7 @@ void drawFillBox(const float pos_x, const float pos_y,
 	const float size_y = pos_y + height;
 
 	//四角の情報の配列
-	GLfloat boxStatus[] = 
+	GLfloat boxStatus[] =
 	{
 		pos_x, pos_y,
 		size_x, pos_y,

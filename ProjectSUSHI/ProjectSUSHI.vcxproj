@@ -162,6 +162,7 @@
     <ClInclude Include="src\guest.h" />
     <ClInclude Include="src\multiProce.h" />
     <ClInclude Include="src\player.h" />
+    <ClInclude Include="src\random.h" />
     <ClInclude Include="src\settings.h" />
     <ClInclude Include="src\sushi.h" />
     <ClInclude Include="src\title.h" />

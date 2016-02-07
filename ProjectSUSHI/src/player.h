@@ -15,6 +15,11 @@ class cPlayer
 	//画像情報
 	TextureInfo handInfo;
 
+	int menuMARU;
+	int menuBATSU;
+	int menuSHIKAKU;
+	int menuSANKAKU;
+
 	int menu_;
 	int seat = 0;
 	int make_time = 0;
@@ -31,7 +36,11 @@ public:
 	int position() const { return seat; }
 
 	//コンストラクタ
-	cPlayer(int position, int menu)
+	cPlayer(int position,
+		int maru = NONE,
+		int batsu = NONE,
+		int shikaku = NONE,
+		int sankaku = NONE)
 		:hand_lTex("res/hand/hand_l.raw",
 		1024, 1024, true),
 		hand_rTex("res/hand/hand_r.raw",
@@ -56,9 +65,13 @@ public:
 
 		//寿司生成判定
 		makebool_ = false;
-		menu_ = menu;
+		menu_ = NONE;
 
 		position = seat;
+		menuMARU = maru;
+		menuBATSU = batsu;
+		menuSHIKAKU = shikaku;
+		menuSANKAKU = sankaku;
 	}
 
 	//描画
@@ -113,47 +126,56 @@ public:
 		glDisable(GL_BLEND);
 	}
 
-	void update(std::vector<cGamePad>& pad, int position)
+	//処理更新
+	void update(std::vector<cGamePad>& pad,
+		int position,
+		int guest_menu
+		)
 	{
 		setPos();
 		make();
-
 		position = seat;
-		//移動処理
+
+		//ゲームパッドを使用する
 		for (auto& gamepad : pad)
 		{
 			//左右移動
-			if (gamepad.isPushButton(R1))
+			if (gamepad.isPushButton(R1) || gamepad.isPushButton(R2))
 			{
 				++seat;
 				if (seat > RIGHT) seat = LEFT;
 			}
-			if (gamepad.isPushButton(L1))
+			if (gamepad.isPushButton(L1) || gamepad.isPushButton(L2))
 			{
 				--seat;
 				if (seat < LEFT) seat = RIGHT;
 			}
 
 			//寿司をつくる体制
-			if (makebool_)
+			if (guest_menu != NONE)
 			{
-			}
-			else
-			{
-				if (gamepad.isPushButton(MARU))
+				if (!makebool_)
 				{
-					menu_ = MAGURO;
-					makebool_ = true;
-				}
-				if (gamepad.isPushButton(BATSU))
-				{
-					menu_ = ANAGO;
-					makebool_ = true;
-				}
-				if (gamepad.isPushButton(SHIKAKU))
-				{
-					menu_ = IKA;
-					makebool_ = true;
+					if (gamepad.isPushButton(MARU))
+					{
+						menu_ = menuMARU;
+						makebool_ = true;
+					}
+					if (gamepad.isPushButton(BATSU))
+					{
+						menu_ = menuBATSU;
+						makebool_ = true;
+					}
+					if (gamepad.isPushButton(SHIKAKU))
+					{
+						menu_ = menuSHIKAKU;
+						makebool_ = true;
+					}
+					if (gamepad.isPushButton(SANKAKU))
+					{
+						menu_ = menuSANKAKU;
+						makebool_ = true;
+					}
 				}
 			}
 		}
@@ -187,6 +209,7 @@ private:
 			{
 				make_time = 0;
 				makebool_ = false;
+				menu_ = NONE;
 			}
 		}
 	}

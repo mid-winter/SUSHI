@@ -3,7 +3,7 @@
 
 class cSushi
 {
-
+	//テクスチャ
 	cTexture MaguroTex;
 	cTexture SalmonTex;
 	cTexture TamagoTex;
@@ -13,14 +13,18 @@ class cSushi
 	cTexture AnagoTex;
 	cTexture HotateTex;
 
+	//描画情報
 	TextureInfo sushiInfo;
 
+	//寿司ネタ選択
 	int menu_ = NONE;
-	int seat = CENTER;
+	//プレイヤーと同じ位置に出すための
+	int seat_;
 
 public:
 
-	cSushi():
+	//コンストラクタ（初期化）
+	cSushi(int seat) :
 		MaguroTex("res/menu/maguro.raw", 512, 256, true),
 		SalmonTex("res/menu/salmon.raw", 512, 256, true),
 		TamagoTex("res/menu/tamago.raw", 512, 256, true),
@@ -36,9 +40,10 @@ public:
 			150, 75,
 			0, 0, 400, 256
 		};
-		menu_ = MAGURO;
+		menu_ = NONE;
 	}
 
+	//描画
 	void draw()
 	{
 		// αブレンディングを有効にする
@@ -47,6 +52,8 @@ public:
 
 		switch (menu_)
 		{
+		case NONE:
+			break;
 		case MAGURO:
 			drawTexture(sushiInfo.pos_x, sushiInfo.pos_y,
 				sushiInfo.size_x, sushiInfo.size_y,
@@ -54,6 +61,38 @@ public:
 				sushiInfo.cut_size_x, sushiInfo.cut_size_y,
 				Color(1.0f, 1.0f, 1.0f),
 				MaguroTex);
+			break;
+		case SALMON:
+			drawTexture(sushiInfo.pos_x, sushiInfo.pos_y,
+				sushiInfo.size_x, sushiInfo.size_y,
+				sushiInfo.cut_pos_x, sushiInfo.cut_pos_y,
+				sushiInfo.cut_size_x, sushiInfo.cut_size_y,
+				Color(1.0f, 1.0f, 1.0f),
+				SalmonTex);
+			break;
+		case TAMAGO:
+			drawTexture(sushiInfo.pos_x, sushiInfo.pos_y,
+				sushiInfo.size_x, sushiInfo.size_y,
+				sushiInfo.cut_pos_x, sushiInfo.cut_pos_y,
+				sushiInfo.cut_size_x, sushiInfo.cut_size_y,
+				Color(1.0f, 1.0f, 1.0f),
+				TamagoTex);
+			break;
+		case EBI:
+			drawTexture(sushiInfo.pos_x, sushiInfo.pos_y,
+				sushiInfo.size_x, sushiInfo.size_y,
+				sushiInfo.cut_pos_x, sushiInfo.cut_pos_y,
+				sushiInfo.cut_size_x, sushiInfo.cut_size_y,
+				Color(1.0f, 1.0f, 1.0f),
+				EbiTex);
+			break;
+		case IKURA:
+			drawTexture(sushiInfo.pos_x, sushiInfo.pos_y,
+				sushiInfo.size_x, sushiInfo.size_y,
+				sushiInfo.cut_pos_x, sushiInfo.cut_pos_y,
+				sushiInfo.cut_size_x, sushiInfo.cut_size_y,
+				Color(1.0f, 1.0f, 1.0f),
+				IkuraTex);
 			break;
 		case IKA:
 			drawTexture(sushiInfo.pos_x, sushiInfo.pos_y,
@@ -63,24 +102,41 @@ public:
 				Color(1.0f, 1.0f, 1.0f),
 				IkaTex);
 			break;
+		case ANAGO:
+			drawTexture(sushiInfo.pos_x, sushiInfo.pos_y,
+				sushiInfo.size_x, sushiInfo.size_y,
+				sushiInfo.cut_pos_x, sushiInfo.cut_pos_y,
+				sushiInfo.cut_size_x, sushiInfo.cut_size_y,
+				Color(1.0f, 1.0f, 1.0f),
+				AnagoTex);
+			break;
+		case HOTATE:
+			drawTexture(sushiInfo.pos_x, sushiInfo.pos_y,
+				sushiInfo.size_x, sushiInfo.size_y,
+				sushiInfo.cut_pos_x, sushiInfo.cut_pos_y,
+				sushiInfo.cut_size_x, sushiInfo.cut_size_y,
+				Color(1.0f, 1.0f, 1.0f),
+				HotateTex);
+			break;
 		}
 
 		// αブレンディングを無効にする
 		glDisable(GL_BLEND);
 	}
 
-	void update(int menu, int player_position)
+	//処理
+	void update(int player_menu, int player_position)
 	{
 		setPosition();
 		//位置情報を同期
-		seat = player_position;
-		menu_ = menu;
+		seat_ = player_position;
+		menu_ = player_menu;
 	}
 private:
 
 	void setPosition()
 	{
-		switch (seat)
+		switch (seat_)
 		{
 		case LEFT:
 			sushiInfo.pos_x = -400;

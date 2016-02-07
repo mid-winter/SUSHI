@@ -1,5 +1,6 @@
 #pragma once
 #include"multiProce.h"
+#include"random.h"
 
 class cGuest
 {
@@ -10,7 +11,10 @@ class cGuest
 	cTexture fukidashiTex;
 	cTexture menuTex;
 	TextureInfo menuInfo;
-	
+
+	//ランダム
+	cRandom random;
+
 	//位置情報
 	int seat = LEFT;
 
@@ -23,11 +27,15 @@ class cGuest
 	//表情
 	int face;
 
+	//満足ポイント
+	int satisfaction = 0;
+
 	//このクラスのコピーを禁止する
 	cGuest(const cGuest&) = delete;
 	cGuest& operator =(const cGuest&) = delete;
 
 public:
+	int menu() const{ return menu_; }
 
 	//コンストラクタ
 	cGuest(int seat_num, int menu)
@@ -47,7 +55,7 @@ public:
 
 		//表情
 		face = NORMAL;
-
+		satisfaction = 0;
 		//位置情報
 		guestInfo =
 		{
@@ -101,29 +109,69 @@ public:
 	}
 
 	//作った処理をまとめ
-	void update()
+	void update(int player_menu)
 	{
-		setmenu();
 		changeFace();
+		setmenu();
 		if (movebool())
 		{
 			call();
+		}
+
+		if (player_menu == NONE)
+		{
+			face = NORMAL;
+		}
+
+		if (satisfaction >= 10)
+		{
+			if (guestInfo.pos_x >= -WIDTH)
+			{
+				guestInfo.pos_x -= 5.0f;
+			}
 		}
 	}
 
 	//表情を変更
 	void judge(int menu)
 	{
-		if (menu_ == menu)
+		if (menu != NONE)
 		{
-			face = SMILE;
-		}
-		else{
-			face = ANGER;
+			if (menu_ == menu)
+			{
+				face = SMILE;
+				satisfaction++;
+				menu_ = NONE;
+				callbool = false;
+			}
+			else
+			{
+				face = ANGER;
+				menu_ = NONE;
+				satisfaction--;
+				callbool = false;
+			}
 		}
 	}
 
 private:
+
+	//表情変更
+	void changeFace()
+	{
+		switch (face)
+		{
+		case NORMAL:
+			guestInfo.cut_pos_x = 0;
+			break;
+		case SMILE:
+			guestInfo.cut_pos_x = 256;
+			break;
+		case ANGER:
+			guestInfo.cut_pos_x = 512;
+			break;
+		}
+	}
 
 	//座る席の位置を決める
 	float sit_pos()
@@ -165,28 +213,12 @@ private:
 		{
 			//一定時間で宣言
 			calltime++;
-			if (calltime > 60)
+			if (calltime == 60)
 			{
+				menu_ = random.fromFirstLast(MAGURO, TAMAGO);
 				calltime = 0;
 				callbool = true;
 			}
-		}
-	}
-
-	//表情を変更
-	void changeFace()
-	{
-		switch (face)
-		{
-		case NORMAL:
-			guestInfo.cut_pos_x = 0;
-			break;
-		case SMILE:
-			guestInfo.cut_pos_x = 256;
-			break;
-		case ANGER:
-			guestInfo.cut_pos_x = 512;
-			break;
 		}
 	}
 
@@ -217,7 +249,7 @@ private:
 
 			menuInfo.cut_pos_x = 0.0f;
 			menuInfo.cut_pos_y = fontsize * 1;
-			menuInfo.cut_size_x = fontsize * 3;
+			menuInfo.cut_size_x = fontsize * 4;
 			menuInfo.cut_size_y = fontsize;
 
 			break;

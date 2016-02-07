@@ -61,6 +61,7 @@ namespace nGame
 		glDisable(GL_BLEND);
 	}
 
+	//‰æ–ÊXV
 	void update(cApp& app, std::vector<cGamePad>& gamepad)
 	{
 		//”wŒi‰æ‘œ
@@ -71,11 +72,11 @@ namespace nGame
 			1024, 1024, true);
 
 		//‹q
-		cGuest guest(CENTER, IKA);
+		cGuest guest(CENTER, NONE);
 		//ƒvƒŒƒCƒ„[
-		cPlayer player(CENTER, MAGURO);
+		cPlayer player(CENTER, MAGURO, SALMON, TAMAGO);
 		//õi
-		cSushi sushi;
+		cSushi sushi(CENTER);
 
 		gamepad.emplace_back(cGamePad(0));
 		while (1)
@@ -89,15 +90,16 @@ namespace nGame
 
 			objectDraw(getaTex);
 			player.draw();
+
 			sushi.draw();
 
-			guest.update();
-			player.update(gamepad, CENTER);
-			sushi.update(player.menu(),player.position());
+			guest.update(player.menu());
+			player.update(gamepad, CENTER, guest.menu());
 
 			//ì‚ë‚¤‚Æ‚µ‚½‚ç”»’è
 			if (player.makebool())
 			{
+				sushi.update(player.menu(), player.position());
 				guest.judge(player.menu());
 			}
 

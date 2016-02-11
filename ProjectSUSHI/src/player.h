@@ -1,7 +1,9 @@
 #pragma once
 #include"multiProce.h"
 #include"gamePad.h"
+#include"sushi.h"
 
+//プレイヤーのクラス
 class cPlayer
 {
 	//画像
@@ -9,21 +11,28 @@ class cPlayer
 	cTexture hand_rTex;
 	cTexture hand_sushi_lTex;
 	cTexture hand_sushi_rTex;
-
 	cTexture keyTex;
 
 	//画像情報
 	TextureInfo handInfo;
 
+	//寿司クラス
+	cSushi sushi;
+
+	//ボタンに対するメニュー
 	int menuMARU;
 	int menuBATSU;
 	int menuSHIKAKU;
 	int menuSANKAKU;
 
-	int menu_;
-	int seat = 0;
-	int make_time = 0;
+	//メニュー
+	int menu_ = NONE;
+	//位置
+	int position_ = CENTER;
 
+	//寿司を生成する体制になっている時間
+	int make_time = 0;
+	//生成判定
 	bool makebool_ = false;
 
 	//このクラスのコピーを禁止する
@@ -33,7 +42,7 @@ class cPlayer
 public:
 	int menu() const{ return menu_; }
 	bool makebool() const { return makebool_; }
-	int position() const { return seat; }
+	int position() const { return position_; }
 
 	//コンストラクタ
 	cPlayer(int position,
@@ -41,16 +50,12 @@ public:
 		int batsu = NONE,
 		int shikaku = NONE,
 		int sankaku = NONE)
-		:hand_lTex("res/hand/hand_l.raw",
-		1024, 1024, true),
-		hand_rTex("res/hand/hand_r.raw",
-		1024, 1024, true),
-		hand_sushi_lTex("res/hand/hand_sushi_l.raw",
-		1024, 1024, true),
-		hand_sushi_rTex("res/hand/hand_sushi_r.raw",
-		1024, 1024, true),
-		keyTex("res/key.raw",
-		512, 512, true)
+		:hand_lTex("res/hand/hand_l.raw", 1024, 1024, true),
+		hand_rTex("res/hand/hand_r.raw", 1024, 1024, true),
+		hand_sushi_lTex("res/hand/hand_sushi_l.raw", 1024, 1024, true),
+		hand_sushi_rTex("res/hand/hand_sushi_r.raw", 1024, 1024, true),
+		keyTex("res/key.raw", 512, 512, true),
+		sushi(position)
 	{
 		//手の位置情報
 		handInfo = {
@@ -61,13 +66,13 @@ public:
 		};
 
 		//手の位置
-		seat = CENTER;
+		position_ = CENTER;
 
 		//寿司生成判定
 		makebool_ = false;
 		menu_ = NONE;
 
-		position = seat;
+		position = position_;
 		menuMARU = maru;
 		menuBATSU = batsu;
 		menuSHIKAKU = shikaku;
@@ -122,6 +127,9 @@ public:
 			Color(1, 1, 1, 0.6f),
 			keyTex);
 
+		//寿司の画像
+		sushi.draw();
+
 		// αブレンディングを無効にする
 		glDisable(GL_BLEND);
 	}
@@ -134,48 +142,49 @@ public:
 	{
 		setPos();
 		make();
-		position = seat;
+		position = position_;
+		sushi.update(menu_, position_);
 
 		//ゲームパッドを使用する
 		for (auto& gamepad : pad)
 		{
 			//左右移動
-			if (gamepad.isPushButton(R1) || gamepad.isPushButton(R2))
+			if (!makebool_)
 			{
-				++seat;
-				if (seat > RIGHT) seat = LEFT;
-			}
-			if (gamepad.isPushButton(L1) || gamepad.isPushButton(L2))
-			{
-				--seat;
-				if (seat < LEFT) seat = RIGHT;
+				if (gamepad.isPushButton(R1) || gamepad.isPushButton(R2))
+				{
+					++position_;
+					if (position_ > RIGHT) position_ = LEFT;
+				}
+				if (gamepad.isPushButton(L1) || gamepad.isPushButton(L2))
+				{
+					--position_;
+					if (position_ < LEFT) position_ = RIGHT;
+				}
 			}
 
 			//寿司をつくる体制
 			if (guest_menu != NONE)
 			{
-				if (!makebool_)
+				if (gamepad.isPushButton(MARU))
 				{
-					if (gamepad.isPushButton(MARU))
-					{
-						menu_ = menuMARU;
-						makebool_ = true;
-					}
-					if (gamepad.isPushButton(BATSU))
-					{
-						menu_ = menuBATSU;
-						makebool_ = true;
-					}
-					if (gamepad.isPushButton(SHIKAKU))
-					{
-						menu_ = menuSHIKAKU;
-						makebool_ = true;
-					}
-					if (gamepad.isPushButton(SANKAKU))
-					{
-						menu_ = menuSANKAKU;
-						makebool_ = true;
-					}
+					menu_ = menuMARU;
+					makebool_ = true;
+				}
+				if (gamepad.isPushButton(BATSU))
+				{
+					menu_ = menuBATSU;
+					makebool_ = true;
+				}
+				if (gamepad.isPushButton(SHIKAKU))
+				{
+					menu_ = menuSHIKAKU;
+					makebool_ = true;
+				}
+				if (gamepad.isPushButton(SANKAKU))
+				{
+					menu_ = menuSANKAKU;
+					makebool_ = true;
 				}
 			}
 		}
@@ -185,7 +194,7 @@ private:
 	//位置情報の変更先を登録
 	void setPos()
 	{
-		switch (seat)
+		switch (position_)
 		{
 		case LEFT:
 			handInfo.pos_x = -300;
@@ -208,7 +217,9 @@ private:
 			if (make_time > 60)
 			{
 				make_time = 0;
+				//作る前の体制に戻す
 				makebool_ = false;
+				//プレイヤーの選択しているメニューを戻す
 				menu_ = NONE;
 			}
 		}

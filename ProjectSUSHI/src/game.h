@@ -4,7 +4,8 @@
 #include "gamePad.h"
 #include "guest.h"
 #include "player.h"
-#include "sushi.h"
+#include"cout.h"
+#include<mutex>
 
 namespace nGame
 {
@@ -71,38 +72,74 @@ namespace nGame
 		cTexture getaTex("res/geta.raw",
 			1024, 1024, true);
 
-		//客
-		cGuest guest(CENTER, NONE);
 		//プレイヤー
-		cPlayer player(CENTER, MAGURO, SALMON, TAMAGO);
-		//寿司
-		cSushi sushi(CENTER);
+		cPlayer player(CENTER,
+			MAGURO, SALMON, TAMAGO);
+		//客
+		cGuest guest(CENTER);
 
+		//std::coutを使うためのもの
+		DbgStreambuf dbg_stream;
+		std::streambuf* stream;
+
+		//判定を一度のみにする
+		bool oncebool = false;
+
+		//ゲームパッドをひとつ使うためのもの
 		gamepad.emplace_back(cGamePad(0));
+
+		//メインループ
 		while (1)
 		{
 			if (!app.isOpen()) exit(0);
 			app.begin();
+
+			//ゲームパッドの更新
 			updateGamePad(gamepad);
+			//cout用のもの
+			stream = std::cout.rdbuf(&dbg_stream);
 
+			//--------------------
+			//描画関係
+			//--------------------
+
+			//背景描画
 			backdraw(backTex);
+			//奥から順に表示したいもの順で描画
 			guest.draw();
-
+			//客の次に描画
 			objectDraw(getaTex);
+			//一番最後にプレイヤーを描画
 			player.draw();
 
-			sushi.draw();
+			//--------------------
+			//処理関係
+			//--------------------
 
+			//処理更新
 			guest.update(player.menu());
 			player.update(gamepad, CENTER, guest.menu());
 
 			//作ろうとしたら判定
 			if (player.makebool())
 			{
-				sushi.update(player.menu(), player.position());
-				guest.judge(player.menu());
+				if (oncebool)
+				{
+					guest.judge(player.menu());
+					oncebool = false;
+				}
+			}
+			//○×□△
+			for (int i = 0; i < 4; ++i)
+			{
+				if (gamepad[0].isPushButton(i))
+				{
+					oncebool = true;
+				}
 			}
 
+			//std::cout用
+			std::cout.rdbuf(stream);
 			app.end();
 		}
 	}

@@ -29,6 +29,7 @@ class cGuest
 
 	//満足ポイント
 	int satisfaction = 0;
+	int clearpoint = 0;
 
 	//このクラスのコピーを禁止する
 	cGuest(const cGuest&) = delete;
@@ -36,9 +37,10 @@ class cGuest
 
 public:
 	int menu() const{ return menu_; }
+	bool clearbool = false;
 
 	//コンストラクタ
-	cGuest(int seat_num, int menu)
+	cGuest(int seat_num)
 		:childTex("res/child.raw", 1024, 256, true),
 		fukidashiTex("res/fukidashi.raw", 1024, 1024, true),
 		menuTex("res/menu.raw", 1024, 512, true)
@@ -48,14 +50,18 @@ public:
 
 		callbool = false;
 		calltime = 0;
-		//何を選ぶか引数から読む
-		menu_ = menu;
+
 		//文字サイズ(縦横同じ)
 		fontsize = 100;
 
 		//表情
 		face = NORMAL;
+
+		//クリアするための変数
 		satisfaction = 0;
+		clearpoint = random.fromFirstLast(7, 10);
+		clearbool = false;
+
 		//位置情報
 		guestInfo =
 		{
@@ -80,6 +86,7 @@ public:
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+		//客画像
 		drawTexture(guestInfo.pos_x, guestInfo.pos_y,
 			guestInfo.size_x, guestInfo.size_y,
 			guestInfo.cut_pos_x, guestInfo.cut_pos_y,
@@ -108,26 +115,31 @@ public:
 		glDisable(GL_BLEND);
 	}
 
-	//作った処理をまとめ
+	//処理更新
 	void update(int player_menu)
 	{
+		//作った処理で毎フレーム更新するものを入れる
 		changeFace();
 		setmenu();
-		if (movebool())
-		{
-			call();
-		}
 
+		if (movebool()) call();
+
+		//表情を初期化
 		if (player_menu == NONE)
 		{
 			face = NORMAL;
 		}
 
-		if (satisfaction >= 10)
+		//満足したら出ていく
+		if (satisfaction >= clearpoint)
 		{
 			if (guestInfo.pos_x >= -WIDTH)
 			{
 				guestInfo.pos_x -= 5.0f;
+			}
+			else
+			{
+				clearbool = true;
 			}
 		}
 	}
@@ -135,23 +147,24 @@ public:
 	//表情を変更
 	void judge(int menu)
 	{
-		if (menu != NONE)
+		if (menu_ != NONE)
 		{
-			if (menu_ == menu)
+			if (menu_ != menu)
+			{
+				face = ANGER;
+				satisfaction--;
+				menu_ = NONE;
+				callbool = false;
+			}
+			else if (menu_ == menu)
 			{
 				face = SMILE;
 				satisfaction++;
 				menu_ = NONE;
 				callbool = false;
 			}
-			else
-			{
-				face = ANGER;
-				menu_ = NONE;
-				satisfaction--;
-				callbool = false;
-			}
 		}
+		std::cout << "Score" << satisfaction << std::endl;
 	}
 
 private:
@@ -197,11 +210,13 @@ private:
 	//移動処理
 	bool movebool()
 	{
-		if (guestInfo.pos_x > sit_pos()){
+		if (guestInfo.pos_x > sit_pos())
+		{
 			guestInfo.pos_x -= 5.0f;
 			return false;
 		}
-		else{
+		else
+		{
 			return true;
 		}
 	}
@@ -209,15 +224,18 @@ private:
 	//メニューを宣言
 	void call()
 	{
-		if (!callbool)
+		if (!clearbool)
 		{
-			//一定時間で宣言
-			calltime++;
-			if (calltime == 60)
+			if (!callbool)
 			{
-				menu_ = random.fromFirstLast(MAGURO, TAMAGO);
-				calltime = 0;
-				callbool = true;
+				//一定時間で宣言
+				calltime++;
+				if (calltime == 60)
+				{
+					menu_ = random.fromFirstLast(MAGURO, TAMAGO);
+					calltime = 0;
+					callbool = true;
+				}
 			}
 		}
 	}

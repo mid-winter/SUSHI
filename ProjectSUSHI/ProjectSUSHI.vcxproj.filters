@@ -56,11 +56,14 @@
     <ClInclude Include="src\player.h">
       <Filter>ヘッダー ファイル\パーツ</Filter>
     </ClInclude>
-    <ClInclude Include="src\sushi.h">
-      <Filter>ヘッダー ファイル\パーツ</Filter>
-    </ClInclude>
     <ClInclude Include="src\random.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cout.h">
+      <Filter>ヘッダー ファイル\画面</Filter>
+    </ClInclude>
+    <ClInclude Include="src\sushi.h">
+      <Filter>ヘッダー ファイル\パーツ</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

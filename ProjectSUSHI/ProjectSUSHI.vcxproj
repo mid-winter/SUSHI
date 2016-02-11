@@ -155,6 +155,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\app.h" />
+    <ClInclude Include="src\cout.h" />
     <ClInclude Include="src\fade.h" />
     <ClInclude Include="src\game.h" />
     <ClInclude Include="src\gamePad.h" />

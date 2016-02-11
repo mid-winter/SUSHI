@@ -34,6 +34,7 @@ public:
 		AnagoTex("res/menu/anago.raw", 512, 256, true),
 		HotateTex("res/menu/hotate.raw", 512, 256, true)
 	{
+		//‰æ‘œˆÊ’u‚È‚Ç‚Ìî•ñ
 		sushiInfo =
 		{
 			0, 0,
@@ -127,13 +128,13 @@ public:
 	//ˆ—
 	void update(int player_menu, int player_position)
 	{
-		setPosition();
 		//ˆÊ’uî•ñ‚ğ“¯Šú
+		setPosition();
 		seat_ = player_position;
 		menu_ = player_menu;
 	}
 private:
-
+	//ˆÊ’uî•ñ
 	void setPosition()
 	{
 		switch (seat_)

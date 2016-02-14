@@ -4,6 +4,8 @@
 #include "gamePad.h"
 #include "guest.h"
 #include "player.h"
+#include "time.h"
+#include "score.h"
 #include"cout.h"
 #include<mutex>
 
@@ -73,23 +75,28 @@ namespace nGame
 			1024, 1024, true);
 
 		//プレイヤー
-		cPlayer player(CENTER,
-			MAGURO, SALMON, TAMAGO);
+		cPlayer player(MAGURO,
+			SALMON,
+			TAMAGO);
 		//客
-		cGuest guest(CENTER);
+		cGuest guests1(LEFT);
+		cGuest guests2(CENTER);
+		cGuest guests3(RIGHT);
+
+		//制限時間
+		cTime time(limit_time);
+		cScore score(clear_score);
 
 		//std::coutを使うためのもの
 		DbgStreambuf dbg_stream;
 		std::streambuf* stream;
 
-		//判定を一度のみにする
-		bool oncebool = false;
-
 		//ゲームパッドをひとつ使うためのもの
 		gamepad.emplace_back(cGamePad(0));
 
+		bool loop = true;
 		//メインループ
-		while (1)
+		while (loop)
 		{
 			if (!app.isOpen()) exit(0);
 			app.begin();
@@ -106,41 +113,59 @@ namespace nGame
 			//背景描画
 			backdraw(backTex);
 			//奥から順に表示したいもの順で描画
-			guest.draw();
+			guests1.draw();
+			guests2.draw();
+			guests3.draw();
+
 			//客の次に描画
 			objectDraw(getaTex);
+
 			//一番最後にプレイヤーを描画
 			player.draw();
+
+			//--------------------
+			//UI	必ず最後に
+			//--------------------
+
+			//時間
+			time.draw();
+			//スコア
+			score.draw();
 
 			//--------------------
 			//処理関係
 			//--------------------
 
-			//処理更新
-			guest.update(player.menu());
-			player.update(gamepad, CENTER, guest.menu());
+			guests1.update(player.menu(), player.position());
+			guests2.update(player.menu(), player.position());
+			guests3.update(player.menu(), player.position());
+			player.update(gamepad,
+				guests1.menu(), guests2.menu(), guests3.menu());
+			time.update();
+			score.update();
+			score.score = guests1.earnings + guests2.earnings + guests3.earnings;
 
-			//作ろうとしたら判定
-			if (player.makebool())
+			//---------------
+			//クリア判定
+			//---------------
+
+			//点数が一定以上で
+			if (score.clearbool())
 			{
-				if (oncebool)
-				{
-					guest.judge(player.menu());
-					oncebool = false;
-				}
+				result = WIN;
+				loop = false;
 			}
-			//○×□△
-			for (int i = 0; i < 4; ++i)
+			//制限時間いっぱいで
+			if (time.endbool())
 			{
-				if (gamepad[0].isPushButton(i))
-				{
-					oncebool = true;
-				}
+				result = LOSE;
+				loop = false;
 			}
 
 			//std::cout用
 			std::cout.rdbuf(stream);
 			app.end();
 		}
+		gamepad.clear();
 	}
 }

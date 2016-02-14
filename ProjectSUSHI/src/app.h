@@ -35,6 +35,7 @@ public:
 		glfwSetWindowSizeCallback(window_, resize);
 		//描画する対象のウィンドウの宣言
 		glfwMakeContextCurrent(window_);
+
 		//画面の更新をする間隔の設定
 		glfwSwapInterval(1);
 	}

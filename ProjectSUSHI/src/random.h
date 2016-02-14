@@ -4,26 +4,26 @@
 class cRandom
 {
 	//メルセンヌ・ツイスタ
-	std::mt19937 engin;
+	std::mt19937 engin_;
 	//0.0 ~ 1.0のランダムを取れるもん　1.0は出ない
-	std::uniform_real_distribution<float> zero_one;
+	std::uniform_real_distribution<float> zero_one_;
 
 public:
 	//コンストラクタ
-	cRandom():
-		engin(std::mt19937::default_seed),
-		zero_one(0.0f, 1.0f){}
+	cRandom() :
+		engin_(std::mt19937::default_seed),
+		zero_one_(0.0f, 1.0f){}
 
 	//同じランダムを出す
 	void setSeed(const unsigned int new_seed)
 	{
-		engin.seed(new_seed);
+		engin_.seed(new_seed);
 	}
 
 	//0, lastを返す
 	int fromZeroLast(const int last)
 	{
-		return engin() % last;
+		return engin_() % last;
 	}
 
 	//first, last を返す
@@ -40,6 +40,6 @@ public:
 	//0.0f, 1.0fを返す
 	float fromZeroOne()
 	{
-		return zero_one(engin);
+		return zero_one_(engin_);
 	}
 };

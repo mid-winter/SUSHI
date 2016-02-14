@@ -9,15 +9,14 @@ namespace nTitle
 	void update(cApp& app, std::vector<cGamePad>& gamepad)
 	{
 		//‰æ‘œ
-		cTexture title("res/title.raw",
+		cTexture title("res/TitleScene/title.raw",
 			1024, 512, true);
 
 		Color fadecolor = Color(0, 0, 0, 1);
 		gamepad.emplace_back(cGamePad(0));
 
-		bool a = true;
-
-		while (a)
+		bool loop = true;
+		while (loop)
 		{
 			if (!app.isOpen()) exit(0);
 			app.begin();
@@ -43,7 +42,7 @@ namespace nTitle
 				{
 					if (gamepad[0].isPressButton(i))
 					{
-						a = false;
+						loop = false;
 					}
 				}
 			}
@@ -52,5 +51,6 @@ namespace nTitle
 			glDisable(GL_BLEND);
 			app.end();
 		}
+		gamepad.clear();
 	}
 };

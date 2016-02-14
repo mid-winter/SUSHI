@@ -1,6 +1,7 @@
 #pragma once
 #include"multiProce.h"
 #include"gamePad.h"
+#include"guest.h"
 #include"sushi.h"
 
 //プレイヤーのクラス
@@ -45,7 +46,7 @@ public:
 	int position() const { return position_; }
 
 	//コンストラクタ
-	cPlayer(int position,
+	cPlayer(
 		int maru = NONE,
 		int batsu = NONE,
 		int shikaku = NONE,
@@ -55,7 +56,7 @@ public:
 		hand_sushi_lTex("res/hand/hand_sushi_l.raw", 1024, 1024, true),
 		hand_sushi_rTex("res/hand/hand_sushi_r.raw", 1024, 1024, true),
 		keyTex("res/key.raw", 512, 512, true),
-		sushi(position)
+		sushi()
 	{
 		//手の位置情報
 		handInfo = {
@@ -72,7 +73,6 @@ public:
 		makebool_ = false;
 		menu_ = NONE;
 
-		position = position_;
 		menuMARU = maru;
 		menuBATSU = batsu;
 		menuSHIKAKU = shikaku;
@@ -136,13 +136,13 @@ public:
 
 	//処理更新
 	void update(std::vector<cGamePad>& pad,
-		int position,
-		int guest_menu
+		int guest_menu1 = NONE,
+		int guest_menu2 = NONE,
+		int guest_menu3 = NONE
 		)
 	{
 		setPos();
 		make();
-		position = position_;
 		sushi.update(menu_, position_);
 
 		//ゲームパッドを使用する
@@ -164,7 +164,9 @@ public:
 			}
 
 			//寿司をつくる体制
-			if (guest_menu != NONE)
+			if (guest_menu1 != NONE ||
+				guest_menu2 != NONE ||
+				guest_menu3 != NONE)
 			{
 				if (gamepad.isPushButton(MARU))
 				{
@@ -214,7 +216,7 @@ private:
 		if (makebool_)
 		{
 			make_time++;
-			if (make_time > 60)
+			if (make_time > 30)
 			{
 				make_time = 0;
 				//作る前の体制に戻す

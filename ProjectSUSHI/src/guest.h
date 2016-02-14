@@ -16,13 +16,21 @@ class cGuest
 	cRandom random;
 
 	//位置情報
-	int seat = LEFT;
+	int position_ = LEFT;
 
+	//移動速度
+	float move_speed = 10.0f;
+
+	//注文
 	bool callbool = false;
 	int calltime = 0;
 
+	//注文メニュー
 	int menu_;
 	float fontsize;
+	int price_ = 0;
+
+	bool oncebool = false;
 
 	//表情
 	int face;
@@ -36,6 +44,7 @@ class cGuest
 	cGuest& operator =(const cGuest&) = delete;
 
 public:
+	int earnings = 0;
 	int menu() const{ return menu_; }
 	bool clearbool = false;
 
@@ -43,10 +52,10 @@ public:
 	cGuest(int seat_num)
 		:childTex("res/child.raw", 1024, 256, true),
 		fukidashiTex("res/fukidashi.raw", 1024, 1024, true),
-		menuTex("res/menu.raw", 1024, 512, true)
+		menuTex("res/menu/menu.raw", 1024, 512, true)
 	{
 		//席を決める
-		seat = seat_num;
+		position_ = seat_num;
 
 		callbool = false;
 		calltime = 0;
@@ -54,11 +63,15 @@ public:
 		//文字サイズ(縦横同じ)
 		fontsize = 100;
 
+		oncebool = false;
+
 		//表情
 		face = NORMAL;
 
 		//クリアするための変数
 		satisfaction = 0;
+
+		random.setSeed(rand());
 		clearpoint = random.fromFirstLast(7, 10);
 		clearbool = false;
 
@@ -116,7 +129,7 @@ public:
 	}
 
 	//処理更新
-	void update(int player_menu)
+	void update(int player_menu, int player_position)
 	{
 		//作った処理で毎フレーム更新するものを入れる
 		changeFace();
@@ -130,12 +143,29 @@ public:
 			face = NORMAL;
 		}
 
+		//プレイヤーの位置と客の位置が同じなら
+		if (position_ == player_position)
+		{
+			if (player_menu != NONE)
+			{
+				if (!oncebool)
+				{
+					judge(player_menu);
+				}
+				oncebool = true;
+			}
+			else
+			{
+				oncebool = false;
+			}
+		}
+
 		//満足したら出ていく
 		if (satisfaction >= clearpoint)
 		{
 			if (guestInfo.pos_x >= -WIDTH)
 			{
-				guestInfo.pos_x -= 5.0f;
+				guestInfo.pos_x -= move_speed;
 			}
 			else
 			{
@@ -153,6 +183,14 @@ public:
 			{
 				face = ANGER;
 				satisfaction--;
+				if (earnings > 0)
+				{
+					earnings -= price_;
+				}
+				else if (earnings <= 0)
+				{
+					earnings = 0;
+				}
 				menu_ = NONE;
 				callbool = false;
 			}
@@ -160,6 +198,7 @@ public:
 			{
 				face = SMILE;
 				satisfaction++;
+				earnings += price_;
 				menu_ = NONE;
 				callbool = false;
 			}
@@ -189,10 +228,10 @@ private:
 	//座る席の位置を決める
 	float sit_pos()
 	{
-		switch (seat){
+		switch (position_){
 			//左の席
 		case LEFT:
-			return -300.0f;
+			return -450.0f;
 			break;
 
 			//中央の席
@@ -202,7 +241,7 @@ private:
 
 			//右の席
 		case RIGHT:
-			return 250;
+			return 200;
 			break;
 		}
 	}
@@ -230,7 +269,7 @@ private:
 			{
 				//一定時間で宣言
 				calltime++;
-				if (calltime == 60)
+				if (calltime >= 120 )
 				{
 					menu_ = random.fromFirstLast(MAGURO, TAMAGO);
 					calltime = 0;
@@ -259,6 +298,7 @@ private:
 			menuInfo.cut_size_x = fontsize * 3;
 			menuInfo.cut_size_y = fontsize;
 
+			price_ = 100;
 			break;
 		case SALMON:
 
@@ -270,6 +310,7 @@ private:
 			menuInfo.cut_size_x = fontsize * 4;
 			menuInfo.cut_size_y = fontsize;
 
+			price_ = 110;
 			break;
 		case TAMAGO:
 
@@ -281,6 +322,7 @@ private:
 			menuInfo.cut_size_x = fontsize * 3;
 			menuInfo.cut_size_y = fontsize;
 
+			price_ = 100;
 			break;
 		case EBI:
 
@@ -292,6 +334,7 @@ private:
 			menuInfo.cut_size_x = fontsize * 2;
 			menuInfo.cut_size_y = fontsize;
 
+			price_ = 100;
 			break;
 		case IKURA:
 
@@ -303,6 +346,7 @@ private:
 			menuInfo.cut_size_x = fontsize * 3;
 			menuInfo.cut_size_y = fontsize;
 
+			price_ = 120;
 			break;
 		case IKA:
 
@@ -314,6 +358,7 @@ private:
 			menuInfo.cut_size_x = fontsize * 2;
 			menuInfo.cut_size_y = fontsize;
 
+			price_ = 110;
 			break;
 		case ANAGO:
 
@@ -325,6 +370,7 @@ private:
 			menuInfo.cut_size_x = fontsize * 3;
 			menuInfo.cut_size_y = fontsize;
 
+			price_ = 120;
 			break;
 		case HOTATE:
 
@@ -336,6 +382,7 @@ private:
 			menuInfo.cut_size_x = fontsize * 3;
 			menuInfo.cut_size_y = fontsize;
 
+			price_ = 140;
 			break;
 		}
 	}

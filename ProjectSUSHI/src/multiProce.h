@@ -1,4 +1,5 @@
 #pragma once
+
 #include "GLFW/glfw3.h"
 #include "graphic.h"
 
@@ -39,6 +40,18 @@ enum SushiMenu
 	NONE = 100
 };
 
+enum RESULT
+{
+	WIN = 0,
+	LOSE
+};
+
+//“ïˆÕ“x‚É‚æ‚Á‚Ä
+static int limit_time = 200;
+static int clear_score = 2000;
+
+//Result‰æ–Ê‚Ì•ÏX
+static int result = 0;
 
 //‰æ‘œî•ñ
 struct  TextureInfo

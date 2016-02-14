@@ -5,7 +5,9 @@
 #include"app.h"
 #include"gamePad.h"
 #include"title.h"
+#include"settings.h"
 #include"game.h"
+#include"result.h"
 
 int main()
 {
@@ -18,6 +20,11 @@ int main()
 	//コントローラーの初期化
 	initGamePad();
 
-	//nTitle::update(app, gamepads);
-	nGame::update(app, gamepads);
+	while (true)
+	{
+		nTitle::update(app, gamepads);
+		nSetting::update(app, gamepads);
+		nGame::update(app, gamepads);
+		nResult::update(app, gamepads);
+	}
 }

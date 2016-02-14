@@ -19,12 +19,15 @@ class cSushi
 	//寿司ネタ選択
 	int menu_ = NONE;
 	//プレイヤーと同じ位置に出すための
-	int seat_;
+	int seat_ = CENTER;
+	
+	//値段
+	int price = 0;
 
 public:
 
 	//コンストラクタ（初期化）
-	cSushi(int seat) :
+	cSushi() :
 		MaguroTex("res/menu/maguro.raw", 512, 256, true),
 		SalmonTex("res/menu/salmon.raw", 512, 256, true),
 		TamagoTex("res/menu/tamago.raw", 512, 256, true),
@@ -42,6 +45,7 @@ public:
 			0, 0, 400, 256
 		};
 		menu_ = NONE;
+		seat_ = CENTER;
 	}
 
 	//描画

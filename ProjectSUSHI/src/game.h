@@ -64,6 +64,92 @@ namespace nGame
 		glDisable(GL_BLEND);
 	}
 
+	//ポーズ描画
+	void pauseDraw(cTexture& japaneseTex, cTexture& numberJapTex)
+	{
+		// αブレンディングを有効にする
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+		//少し暗く
+		drawFillBox(-WIDTH / 2, -HEIGHT / 2,
+			WIDTH, HEIGHT,
+			Color(0, 0, 0, 0.7f));
+
+		//文字
+		drawTexture(-75 * 2, 50,
+			75 * 4, 75,
+			0, 100,
+			100 * 4, 100,
+			Color(1, 1, 1),
+			japaneseTex);
+
+		//目標
+		drawTexture(-400, -100,
+			200, 100,
+			0, 100 * 6,
+			100 * 2, 100,
+			Color(1, 1, 1),
+			japaneseTex);
+
+
+		int score1000 = clear_score / 1000 % 10;
+		int score100 = clear_score / 100 % 10;
+		int score10 = clear_score / 10 % 10;
+
+		//数字
+		//一ケタ目	確実に0
+		drawTexture(-400 + 100 * 6, -100,
+			100, 100,
+			0, 0,
+			100, 100,
+			Color(1, 1, 1),
+			numberJapTex);
+
+		//十ケタ目
+		if (clear_score >= 10)
+		{
+			drawTexture(-400 + 100 * 5, -100,
+				100, 100,
+				0 + score10 * 100, 0,
+				100, 100,
+				Color(1, 1, 1),
+				numberJapTex);
+		}
+
+		//百ケタ目
+		if (clear_score >= 100)
+		{
+			drawTexture(-400 + 100 * 4, -100,
+				100, 100,
+				0 + score100 * 100, 0,
+				100, 100,
+				Color(1, 1, 1),
+				numberJapTex);
+		}
+
+		//千ケタ目
+		if (clear_score >= 1000)
+		{
+			drawTexture(-400 + 100 * 3, -100,
+				100, 100,
+				0 + score1000 * 100, 0,
+				100, 100,
+				Color(1, 1, 1),
+				numberJapTex);
+		}
+		//円
+		drawTexture(300, -100,
+			100, 100,
+			0, 100 * 5,
+			100, 100,
+			Color(1, 1, 1),
+			japaneseTex);
+
+		// αブレンディングを無効にする
+		glDisable(GL_BLEND);
+	}
+
 	//画面更新
 	void update(cApp& app, std::vector<cGamePad>& gamepad)
 	{
@@ -73,11 +159,18 @@ namespace nGame
 		//下駄
 		cTexture getaTex("res/geta.raw",
 			1024, 1024, true);
+		//文字
+		cTexture japaneseTex("res/japanese.raw",
+			1024, 1024, true);
+		//数字
+		cTexture numberJapTex("res/number/numberJap.raw",
+			1024, 128, true);
 
 		//プレイヤー
-		cPlayer player(MAGURO,
-			SALMON,
-			TAMAGO);
+		cPlayer player(selectMenu[0],
+			selectMenu[1],
+			selectMenu[2],
+			selectMenu[3]);
 		//客
 		cGuest guests1(LEFT);
 		cGuest guests2(CENTER);
@@ -93,6 +186,8 @@ namespace nGame
 
 		//ゲームパッドをひとつ使うためのもの
 		gamepad.emplace_back(cGamePad(0));
+
+		bool pause = false;
 
 		bool loop = true;
 		//メインループ
@@ -136,14 +231,28 @@ namespace nGame
 			//処理関係
 			//--------------------
 
-			guests1.update(player.menu(), player.position());
-			guests2.update(player.menu(), player.position());
-			guests3.update(player.menu(), player.position());
-			player.update(gamepad,
-				guests1.menu(), guests2.menu(), guests3.menu());
-			time.update();
-			score.update();
-			score.score = guests1.earnings + guests2.earnings + guests3.earnings;
+			if (gamepad[0].isPushButton(12))
+			{
+				pause = !pause;
+			}
+
+			if (!pause)
+			{
+				guests1.update(player.menu(), player.position());
+				guests2.update(player.menu(), player.position());
+				guests3.update(player.menu(), player.position());
+				player.update(gamepad,
+					guests1.menu(), guests2.menu(), guests3.menu());
+				time.update();
+				score.update(guests1.earnings,
+					guests2.earnings,
+					guests3.earnings);
+			}
+			else
+			{
+				//ポーズ描画
+				pauseDraw(japaneseTex, numberJapTex);
+			}
 
 			//---------------
 			//クリア判定

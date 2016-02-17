@@ -23,7 +23,7 @@ int main()
 	while (true)
 	{
 		nTitle::update(app, gamepads);
-		nSetting::update(app, gamepads);
+		//nSetting::update(app, gamepads);
 		nGame::update(app, gamepads);
 		nResult::update(app, gamepads);
 	}

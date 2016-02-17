@@ -1,6 +1,7 @@
 #pragma once
 #include"multiProce.h"
 #include"random.h"
+#include<time.h>
 
 class cGuest
 {
@@ -34,6 +35,8 @@ class cGuest
 
 	//表情
 	int face;
+	//選択
+	int set_ = 0;
 
 	//満足ポイント
 	int satisfaction = 0;
@@ -71,8 +74,7 @@ public:
 		//クリアするための変数
 		satisfaction = 0;
 
-		random.setSeed(rand());
-		clearpoint = random.fromFirstLast(7, 10);
+		random.setSeed((unsigned int)time(NULL));
 		clearbool = false;
 
 		//位置情報
@@ -104,6 +106,12 @@ public:
 			guestInfo.size_x, guestInfo.size_y,
 			guestInfo.cut_pos_x, guestInfo.cut_pos_y,
 			guestInfo.cut_size_x, guestInfo.cut_size_y,
+			Color(0.0f, 0.0f, 0.0f),
+			childTex);
+		drawTexture(guestInfo.pos_x + 1, guestInfo.pos_y + 1,
+			guestInfo.size_x - 2, guestInfo.size_y -2,
+			guestInfo.cut_pos_x, guestInfo.cut_pos_y,
+			guestInfo.cut_size_x, guestInfo.cut_size_y,
 			Color(1.0f, 1.0f, 1.0f),
 			childTex);
 
@@ -113,8 +121,14 @@ public:
 			drawTexture(guestInfo.pos_x, guestInfo.pos_y + 200,
 				200, 100,
 				0, 0, 1024, 600,
+				Color(0.0f, 0.0f, 0.0f),
+				fukidashiTex);
+			drawTexture(guestInfo.pos_x + 2, guestInfo.pos_y + 200 + 2,
+				200 - 4, 100 -4,
+				0, 0, 1024, 600,
 				Color(1.0f, 1.0f, 1.0f),
 				fukidashiTex);
+
 			//文字部分
 			drawTexture(menuInfo.pos_x, menuInfo.pos_y + 200,
 				menuInfo.size_x, menuInfo.size_y,
@@ -131,6 +145,11 @@ public:
 	//処理更新
 	void update(int player_menu, int player_position)
 	{
+		if (clearpoint < 7)
+		{
+			clearpoint = rand() % 10;
+		}
+
 		//作った処理で毎フレーム更新するものを入れる
 		changeFace();
 		setmenu();
@@ -170,6 +189,7 @@ public:
 			else
 			{
 				clearbool = true;
+				Init();
 			}
 		}
 	}
@@ -271,7 +291,8 @@ private:
 				calltime++;
 				if (calltime >= 120 )
 				{
-					menu_ = random.fromFirstLast(MAGURO, TAMAGO);
+					set_ = rand() % 4;
+					menu_ = selectMenu[set_];
 					calltime = 0;
 					callbool = true;
 				}
@@ -385,5 +406,41 @@ private:
 			price_ = 140;
 			break;
 		}
+	}
+
+	void Init()
+	{
+		callbool = false;
+		calltime = 0;
+
+		//文字サイズ(縦横同じ)
+		fontsize = 100;
+
+		oncebool = false;
+
+		//表情
+		face = NORMAL;
+
+		//クリアするための変数
+		satisfaction = 0;
+
+		random.setSeed((unsigned int)time(NULL));
+		clearbool = false;
+
+		//位置情報
+		guestInfo =
+		{
+			WIDTH / 2 + 100.0f, -HEIGHT / 2 + 175.0f,
+			250, 250,
+			0, 0, 256, 256
+		};
+		//吹き出しの中身
+		menuInfo =
+		{
+			0, 0,
+			150, 50,
+			0, 0,
+			400, 100
+		};
 	}
 };

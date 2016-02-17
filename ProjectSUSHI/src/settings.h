@@ -42,7 +42,7 @@ namespace nSetting
 					if (gamepad[0].isPressButton(i))
 					{
 						clear_score = 2000;
-						limit_time = 120;
+						limit_time = 60;
 						loop = false;
 					}
 				}

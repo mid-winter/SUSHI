@@ -13,6 +13,7 @@ class cPlayer
 	cTexture hand_sushi_lTex;
 	cTexture hand_sushi_rTex;
 	cTexture keyTex;
+	cTexture menuTex;
 
 	//画像情報
 	TextureInfo handInfo;
@@ -56,6 +57,8 @@ public:
 		hand_sushi_lTex("res/hand/hand_sushi_l.raw", 1024, 1024, true),
 		hand_sushi_rTex("res/hand/hand_sushi_r.raw", 1024, 1024, true),
 		keyTex("res/key.raw", 512, 512, true),
+		menuTex("res/menu/menu.raw",
+		1024, 512, true),
 		sushi()
 	{
 		//手の位置情報
@@ -122,10 +125,28 @@ public:
 		}
 
 		//キー
-		drawTexture(200, -300, 200, 200,
-			0, 0, 512, 512,
-			Color(1, 1, 1, 0.6f),
+		drawTexture(175, -195, 50, 50,
+			150, 0, 200, 200,
+			Color(1, 1, 1, 0.4f),
 			keyTex);
+		drawTexture(175, -275, 50, 50,
+			155, 315, 200, 200,
+			Color(1, 1, 1, 0.4f),
+			keyTex);
+		drawTexture(275, -235, 50, 50,
+			320, 175, 200, 200,
+			Color(1, 1, 1, 0.4f),
+			keyTex);
+		drawTexture(80, -235, 50, 50,
+			0, 175, 200, 200,
+			Color(1, 1, 1, 0.4f),
+			keyTex);
+
+		//文字
+		setCharacter(320, -220, menuMARU, menuTex);
+		setCharacter(225, -190, menuSANKAKU, menuTex);
+		setCharacter(225, -265, menuBATSU, menuTex);
+		setCharacter(125, -220, menuSHIKAKU, menuTex);
 
 		//寿司の画像
 		sushi.draw();
@@ -207,6 +228,93 @@ private:
 		case RIGHT:
 			handInfo.pos_x = 250;
 			break;
+		}
+	}
+
+	//文字表示
+	//pos_x, pos_y		位置
+	//setmenu			対応したメニュー
+	//japaneseMenuTex	画像
+	void setCharacter(float pos_x, float pos_y, 
+		int setmenu,
+		cTexture& japaneseMenuText)
+	{
+		int chara_num = 0;
+		float cut_start_x = 0;
+		float cut_start_y = 0;
+		float cut_end_x = 0;
+		float cut_end_y = 0;
+
+		//画像の切り取り位置を変更
+		switch (setmenu)
+		{
+		case MAGURO:
+			chara_num = 3;
+			cut_start_x = 0;
+			cut_start_y = 0;
+			cut_end_x = 100 * chara_num;
+			cut_end_y = 100;
+			break;
+		case SALMON:
+			chara_num = 4;
+			cut_start_x = 0;
+			cut_start_y = 100;
+			cut_end_x = 100 * chara_num;
+			cut_end_y = 100;
+			break;
+		case TAMAGO:
+			chara_num = 3;
+			cut_start_x = 0;
+			cut_start_y = 200;
+			cut_end_x = 100 * chara_num;
+			cut_end_y = 100;
+			break;
+		case EBI:
+			chara_num = 2;
+			cut_start_x = 0;
+			cut_start_y = 300;
+			cut_end_x = 100 * chara_num;
+			cut_end_y = 100;
+			break;
+		case IKURA:
+			chara_num = 3;
+			cut_start_x = 500;
+			cut_start_y = 0;
+			cut_end_x = 100 * chara_num;
+			cut_end_y = 100;
+			break;
+		case IKA:
+			chara_num = 2;
+			cut_start_x = 500;
+			cut_start_y = 100;
+			cut_end_x = 100 * chara_num;
+			cut_end_y = 100;
+			break;
+		case ANAGO:
+			chara_num = 3;
+			cut_start_x = 500;
+			cut_start_y = 200;
+			cut_end_x = 100 * chara_num;
+			cut_end_y = 100;
+			break;
+		case HOTATE:
+			chara_num = 3;
+			cut_start_x = 500;
+			cut_start_y = 300;
+			cut_end_x = 100 * chara_num;
+			cut_end_y = 100;
+			break;
+		}
+
+		//文字表示
+		if (setmenu != NONE)
+		{
+			drawTexture(pos_x, pos_y,
+				35 * chara_num, 35,
+				cut_start_x, cut_start_y,
+				cut_end_x, cut_end_y,
+				Color(0, 0, 0, 0.5f),
+				japaneseMenuText);
 		}
 	}
 

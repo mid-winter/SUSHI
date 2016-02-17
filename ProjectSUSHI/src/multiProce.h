@@ -47,11 +47,17 @@ enum RESULT
 };
 
 //難易度によって
-static int limit_time = 200;
-static int clear_score = 2000;
+static int limit_time = 90;
+static int clear_score = 5000;
 
 //Result画面の変更
 static int result = 0;
+
+//選ばれたすし種
+int selectMenu[4] =
+{
+	NONE, NONE, NONE, NONE
+};
 
 //画像情報
 struct  TextureInfo
@@ -213,17 +219,40 @@ bool fadeIn(int window_width, int window_height,
 	Color& color,
 	float fade_speed)
 {
-
 	//ウィンドウサイズと同じ大きさのフェードを描画
 	drawFillBox(-window_width / 2, -window_height / 2,
 		window_width, window_height,
 		color);
 
 	//α値を徐々に下げて透明に
-	if (color.alpha() > 0){
+	if (color.alpha() > 0)
+	{
 		color.alpha() -= fade_speed;
 	}
-	else{
+	else
+	{
+		return true;
+	}
+	return false;
+}
+
+//フェードアウト
+bool fadeOut(int window_width, int window_height,
+	Color& color,
+	float fade_speed)
+{
+	//ウィンドウサイズと同じ大きさのフェードを描画
+	drawFillBox(-window_width / 2, -window_height / 2,
+		window_width, window_height,
+		color);
+
+	//α値を徐々に下げて透明に
+	if (color.alpha() < 1)
+	{
+		color.alpha() += fade_speed;
+	}
+	else
+	{
 		return true;
 	}
 	return false;
